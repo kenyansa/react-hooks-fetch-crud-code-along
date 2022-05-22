@@ -1,11 +1,28 @@
 import React, { useState } from "react";
 
-function ItemForm() {
+function ItemForm({onAddItem}) { //destructuring the onAddItem prop
   const [name, setName] = useState("");
   const [category, setCategory] = useState("Produce");
 
+  //handling submissions
+  function handleSubmit (e){
+    e.preventDefault();
+    const itemData ={
+      name: name,
+      category: category,
+      isInCart: false,
+    };
+    fetch("http://localhost:4000/items",{method: "POST", headers: {"Content-ype" : "application/json"},
+      body: JSON.stringify(itemData),
+    })
+    .then((r)=>r.json())
+    //we'll call the onAddItem prop with the newItem
+    .then((newItem)=>onAddItem("Success", newItem));
+  }
+
   return (
-    <form className="NewItem">
+    //setting up the form to call handleSubmit when the form is submitted
+    <form className="NewItem" onSubmit={handleSubmit} >
       <label>
         Name:
         <input
